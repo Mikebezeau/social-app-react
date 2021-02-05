@@ -1,4 +1,3 @@
-import { ValuesOfCorrectTypeRule } from "graphql";
 import React from "react";
 import { Form, Button, TextArea } from "semantic-ui-react";
 

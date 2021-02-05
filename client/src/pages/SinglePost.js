@@ -12,7 +12,6 @@ import {
   Label,
   Image,
   Form,
-  TextArea,
   Button,
 } from "semantic-ui-react";
 import MyPopup from "../util/MyPopup";
