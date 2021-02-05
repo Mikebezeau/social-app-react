@@ -9,3 +9,8 @@
   width: 400px;
   margin: auto;
 }
+
+.ui.blue.button:focus,
+.ui.blue.buttons .button:focus {
+  background-color: #2185d0;
+}
