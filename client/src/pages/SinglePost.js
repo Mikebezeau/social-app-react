@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { AuthContext } from "../context/auth";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
@@ -15,12 +15,15 @@ import {
   TextArea,
   Button,
 } from "semantic-ui-react";
+import MyPopup from "../util/MyPopup";
 import moment from "moment";
 import LikeButton from "../components/LikeButton";
 import DeleteButton from "../components/DeleteButton";
 
 function SinglePost(props) {
   const { user } = useContext(AuthContext);
+  const commentInputRef = useRef(null);
+
   const postId = props.match.params.postId;
 
   const [comment, setComment] = useState("");
@@ -28,6 +31,7 @@ function SinglePost(props) {
   const [createPost] = useMutation(CREATE_COMMENT_MUTATION, {
     update() {
       setComment("");
+      commentInputRef.current.blur();
     },
     variables: {
       postId,
@@ -89,13 +93,8 @@ function SinglePost(props) {
               <hr />
               <Card.Content extra>
                 <LikeButton user={user} post={{ id, likes, likeCount }} />
-                <Button
-                  as="div"
-                  labelPosition="right"
-                  onClick={() => {
-                    console.log("Comment...");
-                  }}
-                >
+
+                <Button as="div" labelPosition="right">
                   <Button color="blue" basic>
                     <Icon name="comments" />
                   </Button>
@@ -103,32 +102,35 @@ function SinglePost(props) {
                     {commentCount}
                   </Label>
                 </Button>
-                {user && user.username === username && (
-                  <DeleteButton postId={id} callback={deletePostCallback} />
-                )}
+                <MyPopup content="Delete post">
+                  {user && user.username === username && (
+                    <DeleteButton postId={id} callback={deletePostCallback} />
+                  )}
+                </MyPopup>
               </Card.Content>
             </Card>
             {user && (
               <Card fluid style={{ padding: 15 }}>
-                <Form
-                  onSubmit={() => {
-                    console.log("comment", comment);
-                    createPost();
-                  }}
-                >
-                  <h3>Leave a comment:</h3>
-                  <Form.Field>
-                    <TextArea
+                <h3>Leave a comment:</h3>
+                <Form>
+                  <div className="ui action input fluid">
+                    <input
+                      type="text"
+                      placeholder="Comment..."
+                      name="comment"
                       onChange={(event) => setComment(event.target.value)}
-                      placeholder="Leave a comment!"
-                      name="body"
                       value={comment}
-                      style={{ marginBottom: 15 }}
+                      ref={commentInputRef}
                     />
-                    <Button type="submit" color="blue">
+                    <button
+                      type="submit"
+                      className="ui button blue"
+                      disabled={comment.trim() === "" ? true : false}
+                      onClick={createPost}
+                    >
                       Submit
-                    </Button>
-                  </Form.Field>
+                    </button>
+                  </div>
                 </Form>
               </Card>
             )}

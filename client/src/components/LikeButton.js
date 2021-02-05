@@ -6,6 +6,7 @@ import { useMutation } from "@apollo/react-hooks";
 import { LIKE_POST_MUTATION } from "../util/graphql";
 
 import { Icon, Label, Button } from "semantic-ui-react";
+import MyPopup from "../util/MyPopup";
 
 function LikeButton({ post: { id, likes, likeCount } }) {
   const { user } = useContext(AuthContext);
@@ -46,12 +47,14 @@ function LikeButton({ post: { id, likes, likeCount } }) {
   );
 
   return (
-    <Button as="div" labelPosition="right" onClick={likePost}>
-      {likeButton}
-      <Label as="a" basic color="blue" pointing="left">
-        {likeCount}
-      </Label>
-    </Button>
+    <MyPopup content={user && liked ? "Unlike post" : "Like post"}>
+      <Button as="div" labelPosition="right" onClick={likePost}>
+        {likeButton}
+        <Label as="a" basic color="blue" pointing="left">
+          {likeCount}
+        </Label>
+      </Button>
+    </MyPopup>
   );
 }
 
